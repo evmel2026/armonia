@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="app-version" content="0.4.0">
+<meta name="theme-color" content="#0c1016">
+<title>Armonía · uso exclusivo de Rosi Linco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c1016; --bg2:#121821; --surface:#19212e; --surface2:#222c3b;
+    --line:rgba(255,255,255,.07); --line2:rgba(255,255,255,.14);
+    --text:#eef2f7; --muted:#93a1b5; --muted2:#5f6e84;
+    --mint:#2dd4bf; --amber:#fbbf24; --coral:#fb7185; --sky:#38bdf8;
+    --pink:#f472b6; --green:#34d399; --cyan:#22d3ee; --red:#f43f5e;
+    --accent:#2dd4bf;
+    --sans:'Outfit',system-ui,sans-serif; --serif:'Fraunces',Georgia,serif; --mono:'Space Mono',ui-monospace,monospace;
+    --tab-h:74px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;height:100%}
+  body{
+    background:radial-gradient(125% 60% at 50% -8%, #17222f 0%, var(--bg) 52%), var(--bg);
+    color:var(--text); font-family:var(--sans); font-size:16px; line-height:1.5;
+    -webkit-font-smoothing:antialiased; overflow:hidden;
+  }
+  button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:none}
+  .app{height:100dvh;display:flex;flex-direction:column;max-width:520px;margin:0 auto;position:relative}
+
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;padding-top:max(14px,env(safe-area-inset-top))}
+  .brand h1{font-family:var(--serif);font-weight:600;font-size:22px;margin:0;letter-spacing:.3px}
+  .brand h1 em{font-style:italic;color:var(--accent);font-weight:500;transition:color .4s}
+  .brand .tag{font-size:10px;color:var(--muted2);letter-spacing:.16em;text-transform:uppercase;margin-top:1px}
+  .top-actions{display:flex;gap:8px}
+  .iconbtn{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line)}
+  .iconbtn:active{transform:scale(.94)}
+  .ia-btn{background:linear-gradient(135deg,var(--cyan),#0ea5b7);border:none}
+  .ia-btn svg{stroke:#04222a}
+
+  .screens{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 18px calc(var(--tab-h) + 28px);-webkit-overflow-scrolling:touch}
+  .screen{display:none;animation:fade .35s ease}
+  .screen.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .screen-title{font-family:var(--serif);font-size:15px;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin:6px 0 16px;font-weight:600;transition:color .4s}
+
+  .tabs{position:absolute;left:0;right:0;bottom:0;height:calc(var(--tab-h) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);display:flex;background:linear-gradient(180deg,rgba(12,16,22,.5),rgba(12,16,22,.97));backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--line)}
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--muted2);font-size:9.5px;letter-spacing:0}
+  .tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:.2s}
+  .tab.on{color:var(--accent)}
+  .tab.on svg{transform:translateY(-1px)}
+  .tab .dot{width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:0}
+  .tab.on .dot{opacity:1}
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:18px}
+  .row{display:flex;gap:12px;align-items:center}
+  .btn{background:var(--surface2);border:1px solid var(--line2);border-radius:14px;padding:12px 16px;font-weight:600;font-size:15px;display:inline-flex;align-items:center;gap:8px;justify-content:center}
+  .btn:active{transform:scale(.97)}
+  .btn.primary{background:var(--accent);color:#06121a;border:none;box-shadow:0 6px 22px -8px var(--accent)}
+  .btn.ghost{background:transparent}
+  .btn.block{width:100%}
+  .chip{padding:7px 13px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);font-size:13px;font-weight:500;white-space:nowrap}
+  .chip.on{background:var(--accent);color:#06121a;border-color:transparent;font-weight:600}
+  .scroller{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+  .scroller::-webkit-scrollbar{display:none}
+  input,textarea,select{font-family:inherit;font-size:16px;background:var(--bg2);border:1px solid var(--line2);color:var(--text);border-radius:12px;padding:12px;width:100%}
+  textarea{resize:vertical;line-height:1.7}
+  label.fld{display:block;font-size:12px;color:var(--muted);margin:14px 0 6px;letter-spacing:.04em}
+  .empty{text-align:center;color:var(--muted);padding:46px 20px}
+  .empty .big{font-family:var(--serif);font-size:20px;color:var(--text);margin-bottom:8px}
+
+  /* Afinador */
+  .tuner-wrap{display:flex;flex-direction:column;align-items:center;padding-top:8px}
+  .tuner-ring{position:relative;width:min(82vw,300px);height:min(82vw,300px);display:grid;place-items:center;margin:8px 0}
+  .tuner-ring svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+  .tuner-note{font-family:var(--serif);font-size:76px;line-height:1;font-weight:600}
+  .tuner-note .acc{font-size:34px;color:var(--accent);vertical-align:super}
+  .tuner-sub{font-family:var(--mono);font-size:13px;color:var(--muted);margin-top:6px;letter-spacing:.05em}
+  .cents-bar{width:min(82vw,300px);height:46px;position:relative;margin:18px 0 6px}
+  .cents-bar .mid{position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--mint);transform:translateX(-50%);border-radius:2px}
+  .cents-bar .ind{position:absolute;top:6px;width:8px;height:34px;border-radius:6px;background:var(--mint);left:50%;transform:translateX(-50%);transition:left .08s linear,background .15s}
+  .cents-scale{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--muted2);width:min(82vw,300px);margin-bottom:18px}
+  .mic-state{font-size:13px;color:var(--muted);text-align:center;margin-top:6px;min-height:18px}
+
+  /* Tono */
+  .pipe-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:6px}
+  .pipe{aspect-ratio:1;border-radius:18px;background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--serif);font-size:25px;font-weight:600;transition:.12s}
+  .pipe small{font-family:var(--mono);font-size:10px;color:var(--muted2);font-weight:400;margin-top:2px}
+  .pipe.on{background:var(--accent);color:#06121a;border-color:transparent;transform:scale(1.04);box-shadow:0 8px 26px -6px var(--accent)}
+  .pipe.on small{color:#06121a}
+
+  /* Metro */
+  .metro-bpm{font-family:var(--mono);font-size:72px;font-weight:700;text-align:center;letter-spacing:-2px;line-height:1}
+  .metro-bpm small{font-size:18px;color:var(--muted);letter-spacing:0}
+  .beats{display:flex;gap:9px;justify-content:center;margin:22px 0}
+  .beat{width:16px;height:16px;border-radius:50%;background:var(--surface2);border:1px solid var(--line2);transition:.06s}
+  .beat.acc{box-shadow:inset 0 0 0 2px var(--accent)}
+  .beat.hit{background:var(--accent);transform:scale(1.5)}
+  .bpm-slider{width:100%;margin:8px 0 0;accent-color:var(--accent);height:30px}
+
+  /* Acordes */
+  .chord-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px}
+  .chord-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 6px 8px;display:flex;flex-direction:column;align-items:center}
+  .chord-card .nm{font-family:var(--serif);font-size:17px;font-weight:600;margin-bottom:4px}
+  .chord-card svg{width:100%;height:auto}
+
+  /* Biblioteca */
+  .seg{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px;margin-bottom:16px;gap:2px}
+  .seg button{flex:1;padding:8px 3px;border-radius:10px;font-weight:600;font-size:12px;color:var(--muted);white-space:nowrap}
+  .seg button.on{background:var(--accent);color:#06121a}
+  .item{display:flex;align-items:center;gap:12px;padding:13px 4px;border-bottom:1px solid var(--line)}
+  .item .av{width:46px;height:46px;border-radius:13px;background:var(--surface2);display:grid;place-items:center;font-family:var(--serif);font-size:18px;color:var(--accent);flex:none}
+  .item .t{flex:1;min-width:0}
+  .item .t b{font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .item .t span{font-size:13px;color:var(--muted)}
+  .item .chev{stroke:var(--muted2)}
+
+  /* Full-screen detail */
+  .detail{position:fixed;inset:0;background:var(--bg);z-index:40;max-width:520px;margin:0 auto;display:flex;flex-direction:column}
+  .d-head{display:flex;align-items:center;gap:10px;padding:14px 16px;padding-top:max(14px,env(safe-area-inset-top));border-bottom:1px solid var(--line)}
+  .d-head .t{flex:1;min-width:0}
+  .d-head .t b{font-family:var(--serif);font-size:18px;font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .d-head .t span{font-size:12px;color:var(--muted);font-family:var(--mono)}
+  .d-tools{display:flex;gap:8px;padding:10px 16px;border-bottom:1px solid var(--line);align-items:center;overflow-x:auto}
+  .d-tools .grp{display:flex;align-items:center;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:3px}
+  .d-tools .grp button{width:34px;height:34px;border-radius:9px;font-size:17px;font-weight:700;display:grid;place-items:center}
+  .d-tools .grp .lbl{font-size:11px;color:var(--muted);padding:0 8px;white-space:nowrap}
+  .d-body{flex:1;overflow-y:auto;padding:20px 18px 70px;-webkit-overflow-scrolling:touch}
+  .lyrics{font-size:17px;line-height:2.4;white-space:pre-wrap;word-break:break-word}
+  .lyrics .ln{position:relative;display:inline-block}
+  .lyrics .ch{position:absolute;top:-1.25em;left:0;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--accent)}
+  .karaoke-body{font-size:26px;line-height:1.9;text-align:center;font-weight:500;padding:30px 14px 120px;white-space:pre-wrap}
+  .tone-row{display:flex;gap:7px;flex-wrap:wrap;justify-content:center}
+  .tone-b{padding:9px 13px;border-radius:12px;background:var(--surface);border:1px solid var(--line);font-family:var(--serif);font-weight:600;font-size:16px}
+  .tone-b.on{background:var(--accent);color:#06121a;border-color:transparent}
+  .score img{width:100%;border-radius:14px;margin-top:12px;border:1px solid var(--line);display:block}
+
+  /* IA */
+  .chat{display:flex;flex-direction:column;gap:12px;padding-bottom:8px}
+  .msg{max-width:88%;padding:12px 15px;border-radius:18px;font-size:15px;line-height:1.55;white-space:pre-wrap}
+  .msg.u{align-self:flex-end;background:var(--cyan);color:#04222a;border-bottom-right-radius:5px;font-weight:500}
+  .msg.a{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:5px}
+  .msg.a.live{border-color:var(--cyan)}
+  .chat-input{display:flex;gap:8px;align-items:flex-end;margin-top:14px;position:sticky;bottom:0;background:linear-gradient(180deg,transparent,var(--bg) 30%);padding-top:8px}
+  .chat-input textarea{flex:1;max-height:120px;border-radius:18px}
+  .send{width:46px;height:46px;flex:none;border-radius:50%;background:var(--cyan);display:grid;place-items:center}
+  .send svg{width:20px;height:20px;stroke:#04222a;fill:none;stroke-width:2}
+  .ai-pills{display:flex;gap:8px;overflow-x:auto;margin-bottom:8px;scrollbar-width:none}
+  .ai-pills::-webkit-scrollbar{display:none}
+  .typing{display:inline-flex;gap:4px}
+  .typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite}
+  .typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,60%,100%{opacity:.3}30%{opacity:1}}
+
+  .sheet{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.55);display:none;align-items:flex-end;justify-content:center}
+  .sheet.open{display:flex}
+  .sheet-inner{background:var(--bg2);width:100%;max-width:520px;border-radius:26px 26px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));max-height:90dvh;overflow-y:auto;animation:up .3s ease}
+  @keyframes up{from{transform:translateY(40px);opacity:.6}to{transform:none;opacity:1}}
+  .sheet h3{font-family:var(--serif);font-size:20px;margin:0 0 4px}
+  .grab{width:40px;height:4px;border-radius:2px;background:var(--line2);margin:0 auto 14px}
+  .hint{font-size:12px;color:var(--muted2);margin-top:6px;line-height:1.6}
+
+  .splash{position:fixed;inset:0;z-index:90;background:radial-gradient(125% 60% at 50% 30%, #17222f 0%, var(--bg) 60%);display:grid;place-items:center;transition:opacity .6s}
+  .splash .s-in{text-align:center}
+  .splash h1{font-family:var(--serif);font-size:40px;font-weight:600;margin:0}
+  .splash h1 em{font-style:italic;color:var(--mint)}
+  .splash .ded{font-size:13px;color:var(--muted);letter-spacing:.05em;margin-top:14px}
+  .splash .ded b{color:var(--text);font-weight:600}
+  .splash .fork{width:54px;height:54px;margin:0 auto 18px;animation:sway 2.4s ease-in-out infinite;transform-origin:50% 0}
+  @keyframes sway{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="splash" id="splash">
+  <div class="s-in">
+    <svg class="fork" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="1.5" stroke-linecap="round"><path d="M8 3v8a4 4 0 0 0 8 0V3M12 15v6"/></svg>
+    <h1>Armon<em>í</em>a</h1>
+    <div class="ded">uso exclusivo de <b>Rosi Linco</b></div>
+  </div>
+</div>
+
+<div class="app">
+  <div class="topbar">
+    <div class="brand">
+      <h1>Armon<em>í</em>a</h1>
+      <div class="tag">uso exclusivo de Rosi Linco</div>
+    </div>
+    <div class="top-actions">
+      <button class="iconbtn ia-btn" id="iaTop" aria-label="Asistente IA">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a4 4 0 0 1 4 4 4 4 0 0 1-1 8H9a4 4 0 0 1-1-8 4 4 0 0 1 4-4zM9 21h6"/></svg>
+      </button>
+      <button class="iconbtn" id="settingsBtn" aria-label="Ajustes">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#93a1b5" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="screens" id="screens">
+    <!-- AFINADOR -->
+    <section class="screen active" id="s-tuner">
+      <div class="screen-title">Afinador cromático</div>
+      <div class="tuner-wrap">
+        <div class="tuner-ring">
+          <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" stroke="rgba(255,255,255,.07)" stroke-width="6" fill="none"/>
+            <circle id="tunerArc" cx="60" cy="60" r="54" stroke="#2dd4bf" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="339" stroke-dashoffset="339" style="transition:stroke-dashoffset .12s, stroke .15s"/></svg>
+          <div style="text-align:center"><div class="tuner-note" id="tunerNote">—</div><div class="tuner-sub" id="tunerHz">esperando sonido</div></div>
+        </div>
+        <div class="cents-bar"><div class="mid"></div><div class="ind" id="centsInd"></div></div>
+        <div class="cents-scale"><span>-50</span><span>afinado</span><span>+50</span></div>
+        <button class="btn primary block" id="micBtn" style="max-width:300px">Activar micrófono</button>
+        <div class="mic-state" id="micState"></div>
+      </div>
+    </section>
+
+    <!-- TONO -->
+    <section class="screen" id="s-tone">
+      <div class="screen-title">Dar el tono · diapasón</div>
+      <div class="card" style="margin-bottom:16px;text-align:center">
+        <div style="font-size:13px;color:var(--muted)">Tocá una nota para escucharla. Ideal para arrancar el coro a capella.</div>
+        <div class="row" style="justify-content:center;gap:18px;margin-top:14px">
+          <button class="btn" id="toneA440">La · 440 Hz</button>
+          <button class="btn" id="sustainBtn">Sostener: <b style="margin-left:4px" id="sustainState">no</b></button>
+        </div>
+      </div>
+      <div class="pipe-grid" id="pipeGrid"></div>
+    </section>
+
+    <!-- METRÓNOMO -->
+    <section class="screen" id="s-metro">
+      <div class="screen-title">Metrónomo</div>
+      <div class="card">
+        <div class="metro-bpm"><span id="bpmVal">90</span><small> BPM</small></div>
+        <div class="beats" id="beatsRow"></div>
+        <input type="range" class="bpm-slider" id="bpmSlider" min="40" max="220" value="90">
+        <div class="row" style="justify-content:space-between;margin-top:14px">
+          <button class="btn" id="bpmMinus">−</button><button class="btn" id="tapTempo">Marcar tempo</button><button class="btn" id="bpmPlus">+</button>
+        </div>
+        <div class="row" style="justify-content:space-between;margin-top:16px;align-items:center">
+          <span style="font-size:13px;color:var(--muted)">Compás</span>
+          <div class="scroller" style="flex:1;justify-content:flex-end" id="sigRow"></div>
+        </div>
+      </div>
+      <button class="btn primary block" id="metroToggle" style="margin-top:18px">Iniciar</button>
+    </section>
+
+    <!-- ACORDES -->
+    <section class="screen" id="s-chords">
+      <div class="screen-title" id="chordsTitle">Acordes de guitarra</div>
+      <div class="seg" id="instrSeg" style="margin-bottom:14px">
+        <button class="on" data-instr="guitarra">🎸 Guitarra</button>
+        <button data-instr="ukelele">🎶 Ukelele</button>
+      </div>
+      <div class="scroller" id="chordFilter" style="margin-bottom:14px"></div>
+      <div class="chord-grid" id="chordGrid"></div>
+    </section>
+
+    <!-- CREAR (escáner + poner acordes) -->
+    <section class="screen" id="s-crear">
+      <div class="screen-title">Crear canción</div>
+      <div class="seg" id="crearSeg" style="margin-bottom:16px">
+        <button class="on" data-v="escaner">Escanear</button>
+        <button data-v="poner">Poner acordes</button>
+      </div>
+      <div id="crearBody"></div>
+    </section>
+
+    <!-- BIBLIOTECA -->
+    <section class="screen" id="s-lib">
+      <div class="screen-title" id="libTitle">Cancionero</div>
+      <div class="seg" id="libSeg">
+        <button class="on" data-v="cancionero">Cancionero</button>
+        <button data-v="karaoke">Karaoke</button>
+        <button data-v="coro">Coro</button>
+        <button data-v="grabaciones">Grabaciones</button>
+      </div>
+      <div id="libBody"></div>
+    </section>
+  </div>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab on" data-s="s-tuner" data-ac="#2dd4bf"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 1 18 0M12 12v6M12 3v3"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg><span>Afinar</span><div class="dot"></div></button>
+    <button class="tab" data-s="s-tone" data-ac="#fbbf24"><svg viewBox="0 0 24 24"><path d="M8 3v8a4 4 0 0 0 8 0V3M12 15v6M9 21h6"/></svg><span>Tono</span><div class="dot"></div></button>
+    <button class="tab" data-s="s-metro" data-ac="#fb7185"><svg viewBox="0 0 24 24"><path d="M6 21h12L15 4H9zM12 21V9M12 9l4-3"/></svg><span>Metro</span><div class="dot"></div></button>
+    <button class="tab" data-s="s-chords" data-ac="#38bdf8"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16M9 3v18M15 3v18"/></svg><span>Acordes</span><div class="dot"></div></button>
+    <button class="tab" data-s="s-crear" data-ac="#a78bfa"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/></svg><span>Crear</span><div class="dot"></div></button>
+    <button class="tab" data-s="s-lib" data-ac="#f472b6"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/></svg><span>Biblio</span><div class="dot"></div></button>
+  </nav>
+</div>
+
+<div class="sheet" id="sheet"><div class="sheet-inner" id="sheetInner"></div></div>
+<div class="detail" id="detail" style="display:none"></div>
+
+<script>
+"use strict";
+/* ===== Supabase + IA ===== */
+const SUPABASE_URL="https://etfuixysmdxoucdzungt.supabase.co";
+const SUPABASE_ANON="sb_publishable_Dp-FMSzhU3KovVikWMmzeg_XmdckJyO";
+/* La IA pasa por la Edge Function "armonia-ia" (proxy con la API key como secret) */
+const AI_ENDPOINT = SUPABASE_URL+"/functions/v1/armonia-ia";
+const AI_MODEL = "claude-sonnet-4-6";
+/* Helper para llamar a la IA (texto y/o imagen). messages = [{role,content}] */
+async function callAI(payload){
+  const res=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+SUPABASE_ANON,"apikey":SUPABASE_ANON},body:JSON.stringify(payload)});
+  if(!res.ok)throw new Error("IA "+res.status);
+  return await res.json();
+}
+
+/* ===== Storage ===== */
+const store=(()=>{let mem={},ok=false;try{localStorage.setItem("__t","1");localStorage.removeItem("__t");ok=true;}catch(e){}return{get(k){try{return ok?localStorage.getItem(k):(mem[k]??null);}catch(e){return mem[k]??null;}},set(k,v){try{ok?localStorage.setItem(k,v):(mem[k]=v);}catch(e){mem[k]=v;}}};})();
+const load=(k,d)=>{try{const v=store.get(k);return v?JSON.parse(v):d;}catch(e){return d;}};
+const SYNC_KEYS=["arm_songs","arm_karaoke","arm_coro"];
+const save=(k,v)=>{store.set(k,JSON.stringify(v));if(SYNC_KEYS.includes(k))pushCloud(k,v);};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const esc=s=>(s||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+let AC=null; const ac=()=>{if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state==="suspended")AC.resume();return AC;};
+
+const SHARP=["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+const FLAT=["C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B"];
+const ES={C:"Do","C#":"Do#",D:"Re","D#":"Re#",E:"Mi",F:"Fa","F#":"Fa#",G:"Sol","G#":"Sol#",A:"La","A#":"La#",B:"Si"};
+const noteToFreq=(n,o)=>440*Math.pow(2,(12*(o+1)+SHARP.indexOf(n)-69)/12);
+function freqToNote(f){const m=Math.round(12*Math.log2(f/440)+69);const name=SHARP[(m%12+12)%12];const oct=Math.floor(m/12)-1;const ref=440*Math.pow(2,(m-69)/12);return{name,oct,cents:Math.floor(1200*Math.log2(f/ref))};}
+
+/* ===== Accent ===== */
+const root=document.documentElement;
+const setAccent=c=>root.style.setProperty("--accent",c);
+
+/* ===== Router ===== */
+document.getElementById("tabs").addEventListener("click",e=>{
+  const b=e.target.closest(".tab"); if(!b)return;
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t===b));
+  document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("active",s.id===b.dataset.s));
+  if(b.dataset.s==="s-lib"){ setLibAccent(); } else setAccent(b.dataset.ac);
+  if(b.dataset.s==="s-crear" && typeof renderCrear==="function") renderCrear();
+  if(b.dataset.s!=="s-tuner") stopTuner();
+});
+
+/* ===================== AFINADOR ===================== */
+let tunerStream=null,tunerRAF=null,analyser=null,buf=null;
+const tunerNote=document.getElementById("tunerNote"),tunerHz=document.getElementById("tunerHz"),tunerArc=document.getElementById("tunerArc"),centsInd=document.getElementById("centsInd"),micBtn=document.getElementById("micBtn"),micState=document.getElementById("micState");
+micBtn.addEventListener("click",async()=>{
+  if(tunerStream){stopTuner();return;}
+  try{
+    tunerStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+    const ctx=ac(),src=ctx.createMediaStreamSource(tunerStream);analyser=ctx.createAnalyser();analyser.fftSize=2048;buf=new Float32Array(analyser.fftSize);src.connect(analyser);
+    micBtn.textContent="Detener";micBtn.classList.remove("primary");micState.textContent="Escuchando...";tickTuner();
+  }catch(err){micState.textContent="No pude acceder al micrófono. Abrí el archivo en el navegador del teléfono (necesita HTTPS).";}
+});
+function stopTuner(){if(tunerRAF)cancelAnimationFrame(tunerRAF),tunerRAF=null;if(tunerStream){tunerStream.getTracks().forEach(t=>t.stop());tunerStream=null;}micBtn.textContent="Activar micrófono";micBtn.classList.add("primary");micState.textContent="";tunerNote.innerHTML="—";tunerHz.textContent="esperando sonido";tunerArc.style.strokeDashoffset=339;centsInd.style.left="50%";centsInd.style.background="var(--mint)";tunerArc.style.stroke="var(--mint)";}
+function autoCorrelate(b,sr){let SIZE=b.length,rms=0;for(let i=0;i<SIZE;i++)rms+=b[i]*b[i];rms=Math.sqrt(rms/SIZE);if(rms<0.008)return -1;let r1=0,r2=SIZE-1,th=0.2;for(let i=0;i<SIZE/2;i++)if(Math.abs(b[i])<th){r1=i;break;}for(let i=1;i<SIZE/2;i++)if(Math.abs(b[SIZE-i])<th){r2=SIZE-i;break;}const s=b.slice(r1,r2);SIZE=s.length;const c=new Array(SIZE).fill(0);for(let i=0;i<SIZE;i++)for(let j=0;j<SIZE-i;j++)c[i]+=s[j]*s[j+i];let d=0;while(c[d]>c[d+1])d++;let max=-1,pos=-1;for(let i=d;i<SIZE;i++)if(c[i]>max){max=c[i];pos=i;}let T0=pos;const x1=c[T0-1],x2=c[T0],x3=c[T0+1],a=(x1+x3-2*x2)/2,b2=(x3-x1)/2;if(a)T0=T0-b2/(2*a);return sr/T0;}
+function tickTuner(){tunerRAF=requestAnimationFrame(tickTuner);analyser.getFloatTimeDomainData(buf);const f=autoCorrelate(buf,ac().sampleRate);if(f===-1){tunerHz.textContent="esperando sonido";return;}const n=freqToNote(f);const acc=n.name.includes("#")?"#":"";tunerNote.innerHTML=n.name.replace("#","")+(acc?'<span class="acc">#</span>':"");tunerHz.textContent=ES[n.name]+n.oct+" · "+f.toFixed(1)+" Hz";const cents=Math.max(-50,Math.min(50,n.cents));centsInd.style.left=(50+cents)+"%";const col=Math.abs(cents)<=5?"var(--mint)":(Math.abs(cents)<15?"var(--amber)":"var(--red)");centsInd.style.background=col;tunerArc.style.stroke=col;tunerArc.style.strokeDashoffset=339-(339*(1-Math.abs(cents)/50));}
+
+/* ===================== TONO ===================== */
+let sustain=false,sustainOsc=null;
+const pipeGrid=document.getElementById("pipeGrid");
+[["C",4],["C#",4],["D",4],["D#",4],["E",4],["F",4],["F#",4],["G",4],["G#",4],["A",4],["A#",4],["B",4],["C",5]].forEach(([nm,oct])=>{const b=document.createElement("button");b.className="pipe";b.innerHTML=ES[nm]+(oct===5?"<small>octava</small>":"<small>"+nm+oct+"</small>");b.addEventListener("click",()=>playTone(noteToFreq(nm,oct),b));pipeGrid.appendChild(b);});
+function playTone(freq,btn){const ctx=ac();if(sustain){if(sustainOsc){stopSustain();if(btn&&btn.classList.contains("on")){document.querySelectorAll(".pipe").forEach(p=>p.classList.remove("on"));return;}}const o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=freq;g.gain.value=0;o.connect(g);g.connect(ctx.destination);g.gain.linearRampToValueAtTime(0.18,ctx.currentTime+0.04);o.start();sustainOsc={o,g};document.querySelectorAll(".pipe").forEach(p=>p.classList.remove("on"));if(btn)btn.classList.add("on");}else{const o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=freq;o.connect(g);g.connect(ctx.destination);g.gain.setValueAtTime(0,ctx.currentTime);g.gain.linearRampToValueAtTime(0.2,ctx.currentTime+0.02);g.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+1.6);o.start();o.stop(ctx.currentTime+1.7);if(btn){btn.classList.add("on");setTimeout(()=>btn.classList.remove("on"),300);}}}
+function stopSustain(){if(sustainOsc){const{o,g}=sustainOsc;g.gain.linearRampToValueAtTime(0,ac().currentTime+0.05);o.stop(ac().currentTime+0.1);sustainOsc=null;}}
+document.getElementById("sustainBtn").addEventListener("click",()=>{sustain=!sustain;document.getElementById("sustainState").textContent=sustain?"sí":"no";if(!sustain){stopSustain();document.querySelectorAll(".pipe").forEach(p=>p.classList.remove("on"));}});
+document.getElementById("toneA440").addEventListener("click",()=>playTone(440));
+
+/* ===================== METRÓNOMO ===================== */
+let bpm=90,beatsPerBar=4,metroOn=false,nextNote=0,beat=0,metroTimer=null;
+const bpmVal=document.getElementById("bpmVal"),bpmSlider=document.getElementById("bpmSlider"),beatsRow=document.getElementById("beatsRow"),sigRow=document.getElementById("sigRow");
+function renderBeats(){beatsRow.innerHTML="";for(let i=0;i<beatsPerBar;i++){const d=document.createElement("div");d.className="beat"+(i===0?" acc":"");beatsRow.appendChild(d);}}
+[2,3,4,5,6].forEach(n=>{const c=document.createElement("button");c.className="chip"+(n===4?" on":"");c.textContent=n+"/4";c.onclick=()=>{beatsPerBar=n;[...sigRow.children].forEach(x=>x.classList.remove("on"));c.classList.add("on");renderBeats();};sigRow.appendChild(c);});
+const setBpm=v=>{bpm=Math.max(40,Math.min(220,v));bpmVal.textContent=bpm;bpmSlider.value=bpm;};
+bpmSlider.oninput=()=>setBpm(+bpmSlider.value);
+document.getElementById("bpmPlus").onclick=()=>setBpm(bpm+1);
+document.getElementById("bpmMinus").onclick=()=>setBpm(bpm-1);
+let taps=[];document.getElementById("tapTempo").onclick=()=>{const now=performance.now();taps=taps.filter(t=>now-t<2000);taps.push(now);if(taps.length>=2){const avg=(taps[taps.length-1]-taps[0])/(taps.length-1);setBpm(Math.round(60000/avg));}};
+function clickSound(t,acc){const ctx=ac(),o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=acc?1500:1000;o.connect(g);g.connect(ctx.destination);g.gain.setValueAtTime(0.001,t);g.gain.exponentialRampToValueAtTime(acc?0.5:0.3,t+0.001);g.gain.exponentialRampToValueAtTime(0.001,t+0.05);o.start(t);o.stop(t+0.06);}
+function scheduler(){const ctx=ac();while(nextNote<ctx.currentTime+0.1){const b=beat;clickSound(nextNote,b===0);const dt=(nextNote-ctx.currentTime)*1000;setTimeout(()=>{[...beatsRow.children].forEach(x=>x.classList.remove("hit"));if(beatsRow.children[b])beatsRow.children[b].classList.add("hit");},Math.max(0,dt));nextNote+=60/bpm;beat=(beat+1)%beatsPerBar;}}
+const metroToggle=document.getElementById("metroToggle");
+metroToggle.onclick=()=>{metroOn=!metroOn;if(metroOn){ac();nextNote=ac().currentTime+0.06;beat=0;metroTimer=setInterval(scheduler,25);metroToggle.textContent="Detener";metroToggle.classList.remove("primary");}else{clearInterval(metroTimer);metroToggle.textContent="Iniciar";metroToggle.classList.add("primary");[...beatsRow.children].forEach(x=>x.classList.remove("hit"));}};
+renderBeats();
+
+/* ===================== ACORDES (guitarra + ukelele) ===================== */
+const CHORDS_GUITAR={
+ "Mayores":{"C":[-1,3,2,0,1,0],"D":[-1,-1,0,2,3,2],"E":[0,2,2,1,0,0],"F":[1,3,3,2,1,1],"G":[3,2,0,0,0,3],"A":[-1,0,2,2,2,0],"B":[-1,2,4,4,4,2]},
+ "Menores":{"Am":[-1,0,2,2,1,0],"Dm":[-1,-1,0,2,3,1],"Em":[0,2,2,0,0,0],"Bm":[-1,2,4,4,3,2],"Cm":[-1,3,5,5,4,3],"Fm":[1,3,3,1,1,1],"Gm":[3,5,5,3,3,3]},
+ "Séptima":{"C7":[-1,3,2,3,1,0],"D7":[-1,-1,0,2,1,2],"E7":[0,2,0,1,0,0],"G7":[3,2,0,0,0,1],"A7":[-1,0,2,0,2,0],"B7":[-1,2,1,2,0,2],"Am7":[-1,0,2,0,1,0],"Em7":[0,2,2,0,3,0],"Dm7":[-1,-1,0,2,1,1]},
+ "Color":{"Cmaj7":[-1,3,2,0,0,0],"Gmaj7":[3,2,0,0,0,2],"Cadd9":[-1,3,2,0,3,0],"Asus2":[-1,0,2,2,0,0],"Dsus4":[-1,-1,0,2,3,3],"Asus4":[-1,0,2,2,3,0],"Dsus2":[-1,-1,0,2,3,0]}
+};
+/* Ukelele afinación GCEA (G4 C4 E4 A4) - 4 cuerdas */
+const CHORDS_UKE={
+ "Mayores":{"C":[0,0,0,3],"D":[2,2,2,0],"E":[4,4,4,2],"F":[2,0,1,0],"G":[0,2,3,2],"A":[2,1,0,0],"B":[4,3,2,2]},
+ "Menores":{"Am":[2,0,0,0],"Dm":[2,2,1,0],"Em":[0,4,3,2],"Bm":[4,2,2,2],"Cm":[0,3,3,3],"Fm":[1,0,1,3],"Gm":[0,2,3,1]},
+ "Séptima":{"C7":[0,0,0,1],"D7":[2,2,2,3],"E7":[1,2,0,2],"G7":[0,2,1,2],"A7":[0,1,0,0],"B7":[2,3,2,2],"Am7":[0,0,0,0],"Em7":[0,2,0,2],"Dm7":[2,2,1,3]},
+ "Color":{"Cmaj7":[0,0,0,2],"Gmaj7":[0,2,2,2],"Cadd9":[0,2,0,3],"Asus2":[2,4,5,2],"Dsus4":[0,2,3,0],"Asus4":[2,2,0,0],"Dsus2":[2,2,0,0]}
+};
+let curInstr="guitarra";
+const CHORDS=()=>curInstr==="guitarra"?CHORDS_GUITAR:CHORDS_UKE;
+const chordFilter=document.getElementById("chordFilter"),chordGrid=document.getElementById("chordGrid"),chordsTitle=document.getElementById("chordsTitle"),instrSeg=document.getElementById("instrSeg");
+let curCat="Mayores";
+function renderCatChips(){chordFilter.innerHTML="";Object.keys(CHORDS()).forEach((cat,i)=>{const c=document.createElement("button");c.className="chip"+(cat===curCat?" on":"");c.textContent=cat;c.onclick=()=>{curCat=cat;[...chordFilter.children].forEach(x=>x.classList.remove("on"));c.classList.add("on");renderChords();};chordFilter.appendChild(c);});}
+instrSeg.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;curInstr=b.dataset.instr;[...instrSeg.children].forEach(x=>x.classList.toggle("on",x===b));chordsTitle.textContent=curInstr==="guitarra"?"Acordes de guitarra":"Acordes de ukelele";if(!CHORDS()[curCat])curCat=Object.keys(CHORDS())[0];renderCatChips();renderChords();});
+/* SVG genérico: nStrings cuerdas, nFrets trastes */
+function chordSVG(frets){const nStr=frets.length;const played=frets.filter(f=>f>0);const minF=played.length?Math.min(...played):1;const base=(Math.max(...frets)>4&&minF>1)?minF:1;const W=18+(nStr-1)*15+10,H=104,x0=14,y0=22,fw=(W-x0-8)/(nStr-1),sh=(H-y0-10)/4;let s='<svg viewBox="0 0 '+W+' '+H+'">';for(let i=0;i<nStr;i++){const x=x0+i*fw;s+='<line x1="'+x+'" y1="'+y0+'" x2="'+x+'" y2="'+(y0+sh*4)+'" stroke="rgba(255,255,255,.22)" stroke-width="1"/>';}for(let i=0;i<=4;i++){const y=y0+i*sh;s+='<line x1="'+x0+'" y1="'+y+'" x2="'+(x0+fw*(nStr-1))+'" y2="'+y+'" stroke="rgba(255,255,255,.22)" stroke-width="'+((i===0&&base===1)?3:1)+'"/>';}if(base>1)s+='<text x="4" y="'+(y0+sh*0.7)+'" fill="#93a1b5" font-size="9" font-family="monospace">'+base+'fr</text>';frets.forEach((f,i)=>{const x=x0+i*fw;if(f===-1)s+='<text x="'+x+'" y="'+(y0-6)+'" fill="#f43f5e" font-size="11" text-anchor="middle">✕</text>';else if(f===0)s+='<circle cx="'+x+'" cy="'+(y0-9)+'" r="4" fill="none" stroke="var(--accent)" stroke-width="1.4"/>';else{const rel=f-base+1;if(rel>=1&&rel<=4){const y=y0+(rel-0.5)*sh;s+='<circle cx="'+x+'" cy="'+y+'" r="6.5" fill="var(--accent)"/>';}}});return s+"</svg>";}
+function renderChords(){chordGrid.innerHTML="";Object.entries(CHORDS()[curCat]).forEach(([nm,frets])=>{const c=document.createElement("div");c.className="chord-card";c.innerHTML='<div class="nm">'+nm+'</div>'+chordSVG(frets);c.onclick=()=>strum(frets);chordGrid.appendChild(c);});}
+/* Afinaciones MIDI: guitarra EADGBE / ukelele GCEA */
+const TUNING={guitarra:[40,45,50,55,59,64],ukelele:[67,60,64,69]};
+function strum(frets){const ctx=ac(),open=TUNING[curInstr];let t=ctx.currentTime;frets.forEach((f,i)=>{if(f===-1)return;const freq=440*Math.pow(2,(open[i]+f-69)/12),o=ctx.createOscillator(),g=ctx.createGain();o.type="triangle";o.frequency.value=freq;o.connect(g);g.connect(ctx.destination);const st=t+i*0.04;g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(0.12,st+0.01);g.gain.exponentialRampToValueAtTime(0.0001,st+1.2);o.start(st);o.stop(st+1.3);});}
+renderCatChips();renderChords();
+
+/* ===================== BIBLIOTECA ===================== */
+let songs=load("arm_songs",[]),karaoke=load("arm_karaoke",[]),coro=load("arm_coro",[]);
+let libView="cancionero";
+const LIB_ACCENT={cancionero:"#38bdf8",karaoke:"#f472b6",coro:"#34d399",grabaciones:"#fb923c"};
+const LIB_TITLE={cancionero:"Cancionero",karaoke:"Karaoke",coro:"Coro Amulen",grabaciones:"Grabaciones"};
+const libBody=document.getElementById("libBody"),libSeg=document.getElementById("libSeg"),libTitle=document.getElementById("libTitle");
+function setLibAccent(){setAccent(LIB_ACCENT[libView]);}
+libSeg.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;libView=b.dataset.v;[...libSeg.children].forEach(x=>x.classList.toggle("on",x===b));libTitle.textContent=LIB_TITLE[libView];setLibAccent();renderLib();});
+function renderLib(){ if(libView==="cancionero")renderCancionero(); else if(libView==="karaoke")renderKaraoke(); else if(libView==="coro")renderCoro(); else renderFiles(); }
+
+function itemRow(av,title,sub,onclick){const d=document.createElement("div");d.className="item";d.innerHTML='<div class="av">'+av+'</div><div class="t"><b>'+esc(title)+'</b><span>'+esc(sub)+'</span></div><svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>';d.onclick=onclick;return d;}
+
+/* --- Cancionero (con acordes) --- */
+function renderCancionero(){
+  libBody.innerHTML='<div class="row" style="gap:10px;margin-bottom:14px"><button class="btn primary" id="newSong" style="flex:1">+ Nueva</button><button class="btn" id="aiSong" style="flex:1;border-color:var(--cyan);color:var(--cyan)">&#10022; Buscar con IA</button></div>';
+  document.getElementById("newSong").onclick=()=>editSong(null);
+  document.getElementById("aiSong").onclick=aiFindChords;
+  if(!songs.length){libBody.insertAdjacentHTML("beforeend",'<div class="empty"><div class="big">Sin canciones todavía</div>Cargá una a mano, buscá los acordes con IA, o probá los ejemplos.<br><br><button class="btn" id="seedS">Cargar ejemplos</button></div>');document.getElementById("seedS").onclick=seedSongs;return;}
+  songs.forEach(s=>libBody.appendChild(itemRow((s.title||"?")[0].toUpperCase(),s.title,(s.key?"Tono "+s.key:"sin tono")+(s.artist?" · "+s.artist:""),()=>openSong(s.id))));
+}
+function transposeChord(ch,steps){return ch.replace(/([A-G][#b]?)/g,r=>{let i=SHARP.indexOf(r);if(i<0)i=FLAT.indexOf(r);if(i<0)return r;return SHARP[(i+steps+120)%12];});}
+function renderLyrics(text,steps){return text.split("\n").map(line=>{if(!line.includes("["))return "<div>"+(esc(line)||"&nbsp;")+"</div>";let html="";line.split(/(\[[^\]]+\])/).forEach(p=>{const m=p.match(/^\[([^\]]+)\]$/);if(m){const ch=steps?transposeChord(m[1],steps):m[1];html+='<span class="ln"><span class="ch">'+esc(ch)+'</span></span>';}else html+=esc(p);});return "<div>"+(html||"&nbsp;")+"</div>";}).join("");}
+let scrollTimer=null;
+function openSong(id){const s=songs.find(x=>x.id===id);if(!s)return;let steps=s.steps||0,fs=17,scrolling=false;
+  const D=document.getElementById("detail");D.style.display="flex";
+  D.innerHTML='<div class="d-head"><button class="iconbtn" id="dBack"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#93a1b5" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></button><div class="t"><b>'+esc(s.title)+'</b><span id="dKey"></span></div><button class="iconbtn" id="dEdit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#93a1b5" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button></div><div class="d-tools"><div class="grp"><button id="trM">−</button><span class="lbl">Tono <b id="dSteps">0</b></span><button id="trP">+</button></div><div class="grp"><button id="fsM">A−</button><span class="lbl">Letra</span><button id="fsP">A+</button></div><div class="grp"><button id="scB" style="width:auto;padding:0 12px;font-size:13px">▶ Auto</button></div><div class="grp"><button id="dlPdf" style="width:auto;padding:0 11px;font-size:12px">PDF</button><button id="dlDoc" style="width:auto;padding:0 11px;font-size:12px">Word</button></div></div><div class="d-body" id="dBody"><div class="lyrics" id="dLy"></div>'+(s.partitura?'<div class="score"><div style="font-size:12px;color:var(--muted);margin-top:18px">Hoja</div><img src="'+s.partitura+'"></div>':'')+'</div>';
+  const paint=()=>{document.getElementById("dKey").textContent="Tono "+(steps?transposeChord(s.key||"C",steps):(s.key||"—"));document.getElementById("dSteps").textContent=(steps>0?"+":"")+steps;const ly=document.getElementById("dLy");ly.innerHTML=renderLyrics(s.lyrics||"",steps);ly.style.fontSize=fs+"px";};paint();
+  const body=document.getElementById("dBody");
+  document.getElementById("dBack").onclick=()=>{if(scrollTimer)clearInterval(scrollTimer);D.style.display="none";};
+  document.getElementById("dEdit").onclick=()=>{if(scrollTimer)clearInterval(scrollTimer);D.style.display="none";editSong(id);};
+  document.getElementById("trP").onclick=()=>{steps=Math.min(11,steps+1);s.steps=steps;save("arm_songs",songs);paint();};
+  document.getElementById("trM").onclick=()=>{steps=Math.max(-11,steps-1);s.steps=steps;save("arm_songs",songs);paint();};
+  document.getElementById("fsP").onclick=()=>{fs=Math.min(28,fs+1);paint();};
+  document.getElementById("fsM").onclick=()=>{fs=Math.max(13,fs-1);paint();};
+  const sB=document.getElementById("scB");sB.onclick=()=>{scrolling=!scrolling;sB.textContent=scrolling?"⏸ Auto":"▶ Auto";if(scrolling){scrollTimer=setInterval(()=>{body.scrollTop+=1;if(body.scrollTop+body.clientHeight>=body.scrollHeight){clearInterval(scrollTimer);scrolling=false;sB.textContent="▶ Auto";}},60);}else clearInterval(scrollTimer);};
+  document.getElementById("dlPdf").onclick=()=>downloadPDF({...s,key:steps?transposeChord(s.key||"C",steps):s.key,lyrics:steps?s.lyrics.replace(/\[([^\]]+)\]/g,(m,c)=>"["+transposeChord(c,steps)+"]"):s.lyrics});
+  document.getElementById("dlDoc").onclick=()=>downloadWord({...s,key:steps?transposeChord(s.key||"C",steps):s.key,lyrics:steps?s.lyrics.replace(/\[([^\]]+)\]/g,(m,c)=>"["+transposeChord(c,steps)+"]"):s.lyrics});
+}
+function editSong(id,prefill){const s=id?songs.find(x=>x.id===id):(prefill||{id:uid(),title:"",artist:"",key:"",lyrics:"",partitura:""});
+  openSheet('<h3>'+(id?"Editar":"Nueva")+' canción</h3><label class="fld">Título</label><input id="f-title" value="'+esc(s.title)+'" placeholder="Nombre de la canción"><div class="row"><div style="flex:2"><label class="fld">Intérprete</label><input id="f-artist" value="'+esc(s.artist)+'" placeholder="Opcional"></div><div style="flex:1"><label class="fld">Tono</label><input id="f-key" value="'+esc(s.key)+'" placeholder="C, Am..."></div></div><label class="fld">Letra con acordes <span style="color:var(--muted2)">— acordes entre corchetes: [C], [Am]</span></label><textarea id="f-lyrics" rows="9" placeholder="[G]Estrellita [C]dónde es[G]tás...">'+esc(s.lyrics)+'</textarea><label class="fld">Hoja / partitura (foto, opcional)</label><input type="file" id="f-part" accept="image/*" style="padding:9px"><div id="partPrev">'+(s.partitura?'<img src="'+s.partitura+'" style="width:100%;border-radius:12px;margin-top:10px">':'')+'</div><div class="row" style="margin-top:20px">'+(id?'<button class="btn ghost" id="f-del" style="color:var(--red)">Eliminar</button>':'')+'<button class="btn primary block" id="f-save">Guardar</button></div>');
+  let pd=s.partitura;document.getElementById("f-part").onchange=e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{pd=r.result;document.getElementById("partPrev").innerHTML='<img src="'+pd+'" style="width:100%;border-radius:12px;margin-top:10px">';};r.readAsDataURL(file);};
+  document.getElementById("f-save").onclick=()=>{s.title=document.getElementById("f-title").value.trim()||"Sin título";s.artist=document.getElementById("f-artist").value.trim();s.key=document.getElementById("f-key").value.trim();s.lyrics=document.getElementById("f-lyrics").value;s.partitura=pd;if(!id)songs.unshift(s);save("arm_songs",songs);closeSheet();renderLib();};
+  if(id)document.getElementById("f-del").onclick=()=>{if(confirm("¿Eliminar esta canción?")){songs=songs.filter(x=>x.id!==id);save("arm_songs",songs);closeSheet();renderLib();}};
+}
+function seedSongs(){songs=[{id:uid(),title:"Cielito lindo",artist:"Tradicional",key:"G",lyrics:"[G]Ese lunar que tienes\ncielito lindo [D7]junto a la boca\nno se lo des a [G]nadie\ncielito lindo que a mí me [D7]to[G]ca\n\n[G]Ay, ay, ay, [C]ay\ncanta y no [G]llores\nporque cantando se ale[D7]gran\ncielito lindo los cora[G]zones",steps:0},{id:uid(),title:"De colores",artist:"Tradicional",key:"C",lyrics:"[C]De colores, de colores\nse visten los [G]campos en la prima[C]vera\nDe colores, de colores\nson los paja[G]ritos que vienen de a[C]fuera",steps:0}];save("arm_songs",songs);renderLib();}
+
+/* --- Karaoke (solo letra) --- */
+function renderKaraoke(){
+  libBody.innerHTML='<button class="btn primary block" id="newK" style="margin-bottom:14px">+ Nueva canción de karaoke</button>';
+  document.getElementById("newK").onclick=()=>editKaraoke(null);
+  if(!karaoke.length){libBody.insertAdjacentHTML("beforeend",'<div class="empty"><div class="big">Tu repertorio de karaoke</div>Cargá las letras que cantás afuera. Vista grande y autoscroll para no quedarte sin la letra.</div>');return;}
+  karaoke.forEach(k=>libBody.appendChild(itemRow("♫",k.title,k.artist||"karaoke",()=>openKaraoke(k.id))));
+}
+function openKaraoke(id){const k=karaoke.find(x=>x.id===id);if(!k)return;let fs=26,scrolling=false;
+  const D=document.getElementById("detail");D.style.display="flex";
+  D.innerHTML='<div class="d-head"><button class="iconbtn" id="dBack"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#93a1b5" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></button><div class="t"><b>'+esc(k.title)+'</b><span>'+esc(k.artist||"")+'</span></div><button class="iconbtn" id="dEdit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#93a1b5" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button></div><div class="d-tools">'+(k.link?'<button class="btn" id="kLink" style="padding:8px 14px">▶ Abrir pista</button>':'')+'<div class="grp"><button id="fsM">A−</button><span class="lbl">Letra</span><button id="fsP">A+</button></div><div class="grp"><button id="scB" style="width:auto;padding:0 12px;font-size:13px">▶ Auto</button></div></div><div class="d-body" id="dBody"><div class="karaoke-body" id="kLy"></div></div>';
+  const paint=()=>{const ly=document.getElementById("kLy");ly.textContent=k.lyrics||"";ly.style.fontSize=fs+"px";};paint();
+  const body=document.getElementById("dBody");
+  document.getElementById("dBack").onclick=()=>{if(scrollTimer)clearInterval(scrollTimer);D.style.display="none";};
+  document.getElementById("dEdit").onclick=()=>{if(scrollTimer)clearInterval(scrollTimer);D.style.display="none";editKaraoke(id);};
+  if(k.link)document.getElementById("kLink").onclick=()=>window.open(k.link,"_blank");
+  document.getElementById("fsP").onclick=()=>{fs=Math.min(40,fs+2);paint();};
+  document.getElementById("fsM").onclick=()=>{fs=Math.max(18,fs-2);paint();};
+  const sB=document.getElementById("scB");sB.onclick=()=>{scrolling=!scrolling;sB.textContent=scrolling?"⏸ Auto":"▶ Auto";if(scrolling){scrollTimer=setInterval(()=>{body.scrollTop+=1;if(body.scrollTop+body.clientHeight>=body.scrollHeight){clearInterval(scrollTimer);scrolling=false;sB.textContent="▶ Auto";}},55);}else clearInterval(scrollTimer);};
+}
+function editKaraoke(id){const k=id?karaoke.find(x=>x.id===id):{id:uid(),title:"",artist:"",lyrics:"",link:""};
+  openSheet('<h3>'+(id?"Editar":"Nueva")+' (karaoke)</h3><label class="fld">Título</label><input id="k-title" value="'+esc(k.title)+'"><label class="fld">Intérprete</label><input id="k-artist" value="'+esc(k.artist)+'" placeholder="Opcional"><label class="fld">Letra</label><textarea id="k-lyrics" rows="10" placeholder="Pegá la letra completa acá...">'+esc(k.lyrics)+'</textarea><label class="fld">Link a la pista (opcional)</label><input id="k-link" value="'+esc(k.link)+'" placeholder="https://..."><div class="row" style="margin-top:20px">'+(id?'<button class="btn ghost" id="k-del" style="color:var(--red)">Eliminar</button>':'')+'<button class="btn primary block" id="k-save">Guardar</button></div>');
+  document.getElementById("k-save").onclick=()=>{k.title=document.getElementById("k-title").value.trim()||"Sin título";k.artist=document.getElementById("k-artist").value.trim();k.lyrics=document.getElementById("k-lyrics").value;k.link=document.getElementById("k-link").value.trim();if(!id)karaoke.unshift(k);save("arm_karaoke",karaoke);closeSheet();renderLib();};
+  if(id)document.getElementById("k-del").onclick=()=>{if(confirm("¿Eliminar?")){karaoke=karaoke.filter(x=>x.id!==id);save("arm_karaoke",karaoke);closeSheet();renderLib();}};
+}
+
+/* --- Coro Amulen (partituras) --- */
+const TONOS=[["Do","C"],["Re","D"],["Mi","E"],["Fa","F"],["Sol","G"],["La","A"],["Si","B"]];
+function renderCoro(){
+  libBody.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div style="width:40px;height:40px;border-radius:11px;background:var(--accent);display:grid;place-items:center;color:#06121a;font-family:var(--serif);font-weight:700;font-size:18px">A</div><div><b style="font-family:var(--serif);font-size:17px">Coro Amulen</b><div style="font-size:12px;color:var(--muted)">partituras y tono de cada obra</div></div></div><button class="btn primary block" id="newC" style="margin-bottom:14px">+ Nueva partitura</button>';
+  document.getElementById("newC").onclick=()=>editCoro(null);
+  if(!coro.length){libBody.insertAdjacentHTML("beforeend",'<div class="empty"><div class="big">Repertorio del coro</div>Subí las fotos de las partituras del Coro Amulen y guardá el tono de arranque de cada obra.</div>');return;}
+  coro.forEach(c=>libBody.appendChild(itemRow("♪",c.title,(c.voz?c.voz:"")+(c.note?(" · arranca en "+ES[c.note]):"")||"partitura",()=>openCoro(c.id))));
+}
+function openCoro(id){const c=coro.find(x=>x.id===id);if(!c)return;
+  const D=document.getElementById("detail");D.style.display="flex";
+  const toneBtns=TONOS.map(([sp,en])=>'<button class="tone-b'+(c.note===en?" on":"")+'" data-en="'+en+'">'+sp+'</button>').join("");
+  D.innerHTML='<div class="d-head"><button class="iconbtn" id="dBack"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#93a1b5" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></button><div class="t"><b>'+esc(c.title)+'</b><span>'+esc(c.voz||"Coro Amulen")+'</span></div><button class="iconbtn" id="dEdit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#93a1b5" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button></div><div class="d-body"><div style="font-size:12px;color:var(--muted);margin-bottom:8px">Dar el tono</div><div class="tone-row" id="toneRow">'+toneBtns+'</div><div class="score" id="scoreImgs">'+((c.images&&c.images.length)?c.images.map(im=>'<img src="'+im+'">').join(""):'<div class="hint" style="margin-top:16px">Sin partituras cargadas todavía.</div>')+'</div></div>';
+  document.getElementById("dBack").onclick=()=>{D.style.display="none";};
+  document.getElementById("dEdit").onclick=()=>{D.style.display="none";editCoro(id);};
+  document.getElementById("toneRow").addEventListener("click",e=>{const b=e.target.closest(".tone-b");if(!b)return;playTone(noteToFreq(b.dataset.en,4),null);[...document.querySelectorAll("#toneRow .tone-b")].forEach(x=>x.classList.remove("on"));b.classList.add("on");});
+}
+function editCoro(id){const c=id?coro.find(x=>x.id===id):{id:uid(),title:"",voz:"",note:"",images:[]};let imgs=[...(c.images||[])],note=c.note||"";
+  const toneOpts='<option value="">—</option>'+TONOS.map(([sp,en])=>'<option value="'+en+'"'+(note===en?" selected":"")+'>'+sp+'</option>').join("");
+  openSheet('<h3>'+(id?"Editar":"Nueva")+' partitura</h3><label class="fld">Obra</label><input id="c-title" value="'+esc(c.title)+'" placeholder="Nombre de la obra"><div class="row"><div style="flex:2"><label class="fld">Voz / cuerda</label><input id="c-voz" value="'+esc(c.voz)+'" placeholder="Soprano, contralto..."></div><div style="flex:1"><label class="fld">Tono</label><select id="c-note">'+toneOpts+'</select></div></div><label class="fld">Fotos de la partitura (podés subir varias)</label><input type="file" id="c-imgs" accept="image/*" multiple style="padding:9px"><div id="cPrev" style="margin-top:10px"></div><div class="row" style="margin-top:20px">'+(id?'<button class="btn ghost" id="c-del" style="color:var(--red)">Eliminar</button>':'')+'<button class="btn primary block" id="c-save">Guardar</button></div>');
+  const prev=document.getElementById("cPrev");
+  const drawPrev=()=>{prev.innerHTML=imgs.map((im,i)=>'<div style="position:relative;margin-bottom:8px"><img src="'+im+'" style="width:100%;border-radius:12px"><button data-i="'+i+'" class="rmImg" style="position:absolute;top:6px;right:6px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:16px">✕</button></div>').join("");prev.querySelectorAll(".rmImg").forEach(b=>b.onclick=()=>{imgs.splice(+b.dataset.i,1);drawPrev();});};drawPrev();
+  document.getElementById("c-imgs").onchange=e=>{[...e.target.files].forEach(file=>{const r=new FileReader();r.onload=()=>{imgs.push(r.result);drawPrev();};r.readAsDataURL(file);});};
+  document.getElementById("c-save").onclick=()=>{c.title=document.getElementById("c-title").value.trim()||"Sin título";c.voz=document.getElementById("c-voz").value.trim();c.note=document.getElementById("c-note").value;c.images=imgs;if(!id)coro.unshift(c);save("arm_coro",coro);closeSheet();renderLib();};
+  if(id)document.getElementById("c-del").onclick=()=>{if(confirm("¿Eliminar esta partitura?")){coro=coro.filter(x=>x.id!==id);save("arm_coro",coro);closeSheet();renderLib();}};
+}
+
+/* ===================== GRABACIONES / ARCHIVOS (IndexedDB) ===================== */
+const FILES=(()=>{
+  let dbp=null,mem=[],ok=true;
+  function open(){ if(dbp)return dbp; dbp=new Promise((res,rej)=>{ try{ const r=indexedDB.open("armonia_files",1); r.onupgradeneeded=()=>r.result.createObjectStore("f",{keyPath:"id"}); r.onsuccess=()=>res(r.result); r.onerror=()=>{ok=false;rej(r.error);}; }catch(e){ok=false;rej(e);} }); return dbp; }
+  return {
+    async add(rec){ if(!ok){mem.push(rec);return;} try{ const db=await open(); await new Promise((res,rej)=>{const tx=db.transaction("f","readwrite");tx.objectStore("f").put(rec);tx.oncomplete=res;tx.onerror=()=>rej(tx.error);}); }catch(e){ok=false;mem.push(rec);} },
+    async all(){ if(!ok)return mem; try{ const db=await open(); return await new Promise((res,rej)=>{const tx=db.transaction("f","readonly");const rq=tx.objectStore("f").getAll();rq.onsuccess=()=>res(rq.result);rq.onerror=()=>rej(rq.error);}); }catch(e){ok=false;return mem;} },
+    async del(id){ if(!ok){mem=mem.filter(x=>x.id!==id);return;} try{ const db=await open(); await new Promise((res,rej)=>{const tx=db.transaction("f","readwrite");tx.objectStore("f").delete(id);tx.oncomplete=res;tx.onerror=()=>rej(tx.error);}); }catch(e){ok=false;mem=mem.filter(x=>x.id!==id);} }
+  };
+})();
+const fmtSize=b=>b>1048576?(b/1048576).toFixed(1)+" MB":(b/1024).toFixed(0)+" KB";
+let recording=false,mediaRec=null,recChunks=[];
+async function toggleRecord(){
+  if(recording){ if(mediaRec)mediaRec.stop(); return; }
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    mediaRec=new MediaRecorder(stream); recChunks=[];
+    mediaRec.ondataavailable=e=>{ if(e.data&&e.data.size)recChunks.push(e.data); };
+    mediaRec.onstop=async()=>{ const blob=new Blob(recChunks,{type:mediaRec.mimeType||"audio/webm"}); const d=new Date(); const name="Grabación "+d.toLocaleDateString("es-AR")+" "+d.toLocaleTimeString("es-AR",{hour:"2-digit",minute:"2-digit"})+".webm"; await FILES.add({id:uid(),name,type:blob.type,size:blob.size,added:Date.now(),blob}); stream.getTracks().forEach(t=>t.stop()); recording=false; if(libView==="grabaciones")renderFiles(); };
+    mediaRec.start(); recording=true; renderFiles();
+  }catch(e){ const rs=document.getElementById("recState"); if(rs)rs.textContent="No pude acceder al micrófono. Probá en el navegador del teléfono."; }
+}
+async function renderFiles(){
+  libBody.innerHTML='<div class="row" style="gap:8px;margin-bottom:10px"><button class="btn primary" id="camBtn" style="flex:1">📷 Cámara</button><button class="btn" id="upBtn" style="flex:1">&#8593; Archivo</button><button class="btn" id="recBtn" style="flex:1">&#9679; Grabar</button></div><input type="file" id="camInput" accept="image/*" capture="environment" style="display:none"><input type="file" id="fileInput" multiple style="display:none"><div id="recState" class="hint" style="text-align:center;min-height:14px"></div><div id="filesList" style="margin-top:8px"></div>';
+  const input=document.getElementById("fileInput"), camInput=document.getElementById("camInput");
+  document.getElementById("upBtn").onclick=()=>input.click();
+  document.getElementById("camBtn").onclick=()=>camInput.click();
+  const addFiles=async list=>{ for(const file of list){ await FILES.add({id:uid(),name:file.name||("Foto "+new Date().toLocaleString("es-AR")+".jpg"),type:file.type,size:file.size,added:Date.now(),blob:file}); } renderFiles(); };
+  input.onchange=async e=>{ await addFiles(e.target.files); input.value=""; };
+  camInput.onchange=async e=>{ await addFiles(e.target.files); camInput.value=""; };
+  const recBtn=document.getElementById("recBtn");
+  recBtn.onclick=toggleRecord;
+  if(recording){ recBtn.textContent="\u25A0 Detener"; recBtn.style.color="var(--red)"; document.getElementById("recState").textContent="Grabando..."; }
+  const list=document.getElementById("filesList");
+  let files=[]; try{ files=await FILES.all(); }catch(e){}
+  files.sort((a,b)=>b.added-a.added);
+  if(!files.length){ list.innerHTML='<div class="empty"><div class="big">Tu música y archivos</div>Subí grabaciones, pistas o cualquier archivo, o grabá directo desde acá.</div>'; return; }
+  list.innerHTML="";
+  files.forEach(f=>{
+    const url=URL.createObjectURL(f.blob);
+    const isAudio=(f.type||"").startsWith("audio")||/\.(mp3|m4a|wav|ogg|aac|flac|webm)$/i.test(f.name);
+    const isImage=(f.type||"").startsWith("image")||/\.(jpe?g|png|gif|webp|heic)$/i.test(f.name);
+    const isPdf=(f.type||"")==="application/pdf"||/\.pdf$/i.test(f.name);
+    const div=document.createElement("div"); div.className="card"; div.style.marginBottom="12px";
+    let media;
+    if(isAudio) media='<audio controls preload="none" src="'+url+'" style="width:100%;margin-top:10px"></audio>';
+    else if(isImage) media='<img src="'+url+'" style="width:100%;border-radius:12px;margin-top:10px"><a href="'+url+'" download="'+esc(f.name)+'" class="btn block" style="margin-top:8px">Descargar</a>';
+    else if(isPdf) media='<a href="'+url+'" target="_blank" class="btn block" style="margin-top:10px">📄 Abrir PDF</a>';
+    else media='<a href="'+url+'" download="'+esc(f.name)+'" class="btn block" style="margin-top:10px">Abrir / descargar</a>';
+    div.innerHTML='<div class="row" style="justify-content:space-between;align-items:flex-start"><div style="min-width:0"><b style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(f.name)+'</b><span style="font-size:12px;color:var(--muted)">'+fmtSize(f.size)+'</span></div><button class="iconbtn" data-del="'+f.id+'" style="flex:none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button></div>'+media;
+    list.appendChild(div);
+  });
+  list.querySelectorAll("[data-del]").forEach(b=>b.onclick=async()=>{ if(confirm("¿Eliminar este archivo?")){ await FILES.del(b.dataset.del); renderFiles(); } });
+}
+
+/* ===================== BUSCAR ACORDES CON IA ===================== */
+function aiFindChords(){
+  openSheet('<h3>Buscar acordes con IA</h3><p class="hint">Escribí la canción y el artista. La IA te arma el cancionero con los acordes para que lo revises y guardes.</p><label class="fld">Canción</label><input id="ai-song" placeholder="Ej: La balsa"><label class="fld">Artista (opcional)</label><input id="ai-art" placeholder="Ej: Los Gatos"><button class="btn primary block" id="ai-go" style="margin-top:16px">Buscar acordes</button><div id="ai-st" class="hint" style="margin-top:12px;text-align:center"></div>');
+  document.getElementById("ai-go").onclick=async()=>{
+    const song=document.getElementById("ai-song").value.trim(); if(!song)return;
+    const art=document.getElementById("ai-art").value.trim();
+    const st=document.getElementById("ai-st"); st.innerHTML='<span class="typing"><i></i><i></i><i></i></span> buscando los acordes...';
+    const prompt='Sos un asistente de cancionero. Necesito los acordes (sobre la letra) de la canción "'+song+'"'+(art?(' de '+art):'')+'. Respondé SOLO con un objeto JSON válido, sin texto extra ni markdown, con esta forma exacta: {"title":"","artist":"","key":"","lyrics":""}. En "lyrics" poné la letra con los acordes entre corchetes en la posición correcta, por ejemplo "[G]Estrellita [C]dónde es[G]tás", usando \\n para los saltos de línea. En "key" poné el tono principal (C, Am, G...). Si no conocés la canción con confianza, respondé {"error":"no encontrada"}.';
+    try{
+      const data=await callAI({model:AI_MODEL,max_tokens:1600,messages:[{role:"user",content:prompt}]});
+      let txt=(data.content||[]).map(b=>b.type==="text"?b.text:"").join("").trim().replace(/```json|```/g,"").trim();
+      const obj=JSON.parse(txt);
+      if(obj.error){ st.textContent="No la encontré con seguridad. Probá agregando el artista, o cargala a mano."; return; }
+      closeSheet();
+      editSong(null,{id:uid(),title:obj.title||song,artist:obj.artist||art,key:obj.key||"",lyrics:obj.lyrics||"",partitura:"",steps:0});
+    }catch(err){ st.textContent="No pude conectar o leer la respuesta. En la versión publicada apuntá AI_ENDPOINT a tu proxy de Supabase."; }
+  };
+}
+
+/* ===================== ASISTENTE IA (pantalla completa) ===================== */
+let aiHistory=[];
+const SYSTEM="Sos un asistente musical experto y cálido para Rosi Linco, una cantante que toca la guitarra y canta en el coro Amulen. Respondés en español rioplatense, breve y práctico. Sabés de teoría musical, armonía, transposición, acordes, técnica vocal y arreglos corales. Cuando des acordes sobre una letra usá corchetes [C].";
+function openAI(){
+  const D=document.getElementById("detail");D.style.display="flex";setAccent("#22d3ee");
+  D.innerHTML='<div class="d-head"><button class="iconbtn" id="aiBack"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#93a1b5" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></button><div class="t"><b>Asistente musical</b><span>con IA</span></div></div><div class="d-body" style="padding-bottom:18px"><div class="ai-pills" id="aiPills"></div><div class="chat" id="chat"></div><div class="chat-input"><textarea id="aiInput" rows="1" placeholder="Preguntá sobre teoría, armonías, transponer..."></textarea><button class="send" id="aiSend"><svg viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></button></div></div>';
+  const chat=document.getElementById("chat"),aiInput=document.getElementById("aiInput"),aiPills=document.getElementById("aiPills");
+  ["¿Qué acordes van en Sol mayor?","Armonizá a tres voces para el coro","¿Cómo caliento la voz antes de cantar?","Pasame esta canción dos tonos arriba"].forEach(q=>{const c=document.createElement("button");c.className="chip";c.textContent=q;c.onclick=()=>{aiInput.value=q;send();};aiPills.appendChild(c);});
+  const addMsg=(role,text)=>{const d=document.createElement("div");d.className="msg "+(role==="user"?"u":"a");d.textContent=text;chat.appendChild(d);d.scrollIntoView({behavior:"smooth",block:"end"});return d;};
+  aiInput.addEventListener("input",()=>{aiInput.style.height="auto";aiInput.style.height=Math.min(120,aiInput.scrollHeight)+"px";});
+  aiInput.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}});
+  document.getElementById("aiSend").onclick=send;
+  document.getElementById("aiBack").onclick=()=>{D.style.display="none";const on=document.querySelector(".tab.on");setAccent(on?(on.dataset.s==="s-lib"?LIB_ACCENT[libView]:on.dataset.ac):"#2dd4bf");};
+  async function send(){const text=aiInput.value.trim();if(!text)return;addMsg("user",text);aiInput.value="";aiInput.style.height="auto";aiHistory.push({role:"user",content:text});const t=document.createElement("div");t.className="msg a live";t.innerHTML='<span class="typing"><i></i><i></i><i></i></span>';chat.appendChild(t);t.scrollIntoView({behavior:"smooth",block:"end"});
+    try{const data=await callAI({model:AI_MODEL,max_tokens:1000,system:SYSTEM,messages:aiHistory});const reply=(data.content||[]).map(b=>b.type==="text"?b.text:"").join("\n").trim()||"No pude generar respuesta.";t.classList.remove("live");t.textContent=reply;aiHistory.push({role:"assistant",content:reply});}
+    catch(err){t.classList.remove("live");t.textContent="No me pude conectar al asistente. En la versión publicada apuntá AI_ENDPOINT a tu proxy de Supabase.";}
+  }
+}
+document.getElementById("iaTop").onclick=openAI;
+
+/* ===================== Sheets / ajustes ===================== */
+const sheet=document.getElementById("sheet"),sheetInner=document.getElementById("sheetInner");
+function openSheet(html){sheetInner.innerHTML='<div class="grab"></div>'+html;sheet.classList.add("open");}
+function closeSheet(){sheet.classList.remove("open");}
+sheet.addEventListener("click",e=>{if(e.target===sheet)closeSheet();});
+document.getElementById("settingsBtn").onclick=()=>openSheet('<h3>Armonía</h3><p class="hint" style="font-size:14px">Estudio musical de uso exclusivo de Rosi Linco: afinador, diapasón para el coro Amulen, metrónomo, acordes de guitarra y ukelele, escáner de canciones, cancionero, karaoke, grabaciones, archivos y asistente con IA.</p><div id="syncBadge" class="hint" style="text-align:center;margin:8px 0;font-weight:600;color:var(--accent)">verificando sincronización...</div><label class="fld">Respaldo</label><button class="btn block" id="expBtn">Exportar todo (JSON)</button><p class="hint" style="margin-top:18px">Versión 0.4.0 · prototipo · sincronizado entre dispositivos</p>');setTimeout(updateSyncBadge,50);
+document.addEventListener("click",e=>{if(e.target.id==="expBtn"){const blob=new Blob([JSON.stringify({songs,karaoke,coro},null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="armonia-respaldo.json";a.click();}});
+
+/* ===================== SUPABASE SYNC ===================== */
+/* Tabla armonia_data: { id text pk, payload jsonb, updated_at timestamptz }.
+   Sincroniza arm_songs / arm_karaoke / arm_coro entre dispositivos. */
+const SB_HEADERS={"Content-Type":"application/json","apikey":SUPABASE_ANON,"Authorization":"Bearer "+SUPABASE_ANON};
+const DEVICE_ID=(()=>{let d=store.get("arm_device");if(!d){d=uid()+uid();store.set("arm_device",d);}return d;})();
+let cloudOK=false, syncing=false;
+async function pushCloud(key,val){
+  try{
+    await fetch(SUPABASE_URL+"/rest/v1/armonia_data?on_conflict=id",{
+      method:"POST",
+      headers:{...SB_HEADERS,"Prefer":"resolution=merge-duplicates,return=minimal"},
+      body:JSON.stringify({id:key,payload:val,updated_at:new Date().toISOString(),device:DEVICE_ID})
+    });
+  }catch(e){/* sin conexión: queda local, se subirá al próximo guardado */}
+}
+async function pullCloud(){
+  try{
+    const res=await fetch(SUPABASE_URL+"/rest/v1/armonia_data?select=id,payload,updated_at",{headers:SB_HEADERS});
+    if(!res.ok)return;
+    const rows=await res.json(); cloudOK=true;
+    let changed=false;
+    rows.forEach(r=>{
+      if(!SYNC_KEYS.includes(r.id))return;
+      const localRaw=store.get(r.id);
+      const cloudRaw=JSON.stringify(r.payload);
+      if(localRaw!==cloudRaw){
+        store.set(r.id,cloudRaw);
+        if(r.id==="arm_songs")songs=r.payload;
+        if(r.id==="arm_karaoke")karaoke=r.payload;
+        if(r.id==="arm_coro")coro=r.payload;
+        changed=true;
+      }
+    });
+    if(changed){ try{renderLib();}catch(e){} }
+    updateSyncBadge();
+  }catch(e){ cloudOK=false; updateSyncBadge(); }
+}
+function updateSyncBadge(){ const el=document.getElementById("syncBadge"); if(el)el.textContent=cloudOK?"☁ Sincronizado entre dispositivos":"⚠ Sin conexión (guardado local)"; }
+/* primera carga + sondeo cada 60s */
+setTimeout(pullCloud,400);
+setInterval(pullCloud,60000);
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden)pullCloud(); });
+
+/* ===================== CREAR: ESCÁNER + PONER ACORDES ===================== */
+let crearView="escaner";
+const crearSeg=document.getElementById("crearSeg"), crearBody=document.getElementById("crearBody");
+crearSeg.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;crearView=b.dataset.v;[...crearSeg.children].forEach(x=>x.classList.toggle("on",x===b));renderCrear();});
+function renderCrear(){ if(crearView==="escaner")renderEscaner(); else renderPoner(); }
+
+function fileToDataURL(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file);});}
+
+/* --- ESCÁNER: foto/cámara/PDF -> guarda imagen + IA extrae letra y acordes --- */
+function renderEscaner(){
+  crearBody.innerHTML=
+    '<div class="card" style="text-align:center">'+
+    '<div style="font-size:13px;color:var(--muted);line-height:1.6">Tomá una foto de la canción impresa (con notas o acordes y letra), elegí una imagen, o subí un PDF. La guardo como hoja y la IA te arma la letra con acordes editable.</div>'+
+    '<div class="row" style="gap:10px;margin-top:16px">'+
+      '<button class="btn primary" id="escCam" style="flex:1">📷 Cámara</button>'+
+      '<button class="btn" id="escGal" style="flex:1">🖼️ Galería</button>'+
+      '<button class="btn" id="escPdf" style="flex:1">📄 PDF</button>'+
+    '</div>'+
+    '<input type="file" id="escInputCam" accept="image/*" capture="environment" style="display:none">'+
+    '<input type="file" id="escInputGal" accept="image/*" style="display:none">'+
+    '<input type="file" id="escInputPdf" accept="application/pdf" style="display:none">'+
+    '</div>'+
+    '<div id="escPrev"></div>'+
+    '<div id="escState" class="hint" style="text-align:center;margin-top:10px;min-height:16px"></div>';
+  const ci=document.getElementById("escInputCam"),gi=document.getElementById("escInputGal"),pi=document.getElementById("escInputPdf");
+  document.getElementById("escCam").onclick=()=>ci.click();
+  document.getElementById("escGal").onclick=()=>gi.click();
+  document.getElementById("escPdf").onclick=()=>pi.click();
+  ci.onchange=e=>handleScan(e.target.files[0],"image");
+  gi.onchange=e=>handleScan(e.target.files[0],"image");
+  pi.onchange=e=>handleScan(e.target.files[0],"pdf");
+}
+async function handleScan(file,kind){
+  if(!file)return;
+  const st=document.getElementById("escState"), prev=document.getElementById("escPrev");
+  const dataURL=await fileToDataURL(file);
+  if(kind==="image") prev.innerHTML='<img src="'+dataURL+'" style="width:100%;border-radius:14px;margin-top:14px;border:1px solid var(--line)">';
+  else prev.innerHTML='<div class="card" style="margin-top:14px;text-align:center">📄 PDF cargado: <b>'+esc(file.name)+'</b></div>';
+  st.innerHTML='<span class="typing"><i></i><i></i><i></i></span> leyendo la canción...';
+  const b64=dataURL.split(",")[1];
+  const media=kind==="pdf"?"application/pdf":(file.type||"image/jpeg");
+  const promptTxt='Esta es una canción impresa (puede tener notas musicales, cifrado de acordes y/o letra). Transcribí la LETRA y ubicá los ACORDES entre corchetes en la posición correcta sobre cada sílaba, por ejemplo "[G]Estrellita [C]dónde es[G]tás". Si no hay acordes visibles pero sí notas, deducí los acordes probables. Respondé SOLO con JSON válido sin markdown: {"title":"","artist":"","key":"","lyrics":""}. Usá \\n para saltos de línea en lyrics. Si no podés leer nada, respondé {"error":"ilegible"}.';
+  const content=[ kind==="pdf"
+      ? {type:"document",source:{type:"base64",media_type:"application/pdf",data:b64}}
+      : {type:"image",source:{type:"base64",media_type:media,data:b64}},
+    {type:"text",text:promptTxt} ];
+  try{
+    const data=await callAI({model:AI_MODEL,max_tokens:2000,messages:[{role:"user",content}]});
+    let txt=(data.content||[]).map(b=>b.type==="text"?b.text:"").join("").trim().replace(/```json|```/g,"").trim();
+    const obj=JSON.parse(txt);
+    if(obj.error){ st.textContent="No pude leer la canción con claridad. Probá otra foto más nítida o cargala a mano."; return; }
+    st.textContent="¡Listo! Revisá y guardá.";
+    editSong(null,{id:uid(),title:obj.title||"Sin título",artist:obj.artist||"",key:obj.key||"",lyrics:obj.lyrics||"",partitura:kind==="image"?dataURL:"",steps:0});
+  }catch(err){ st.textContent="No me pude conectar a la IA. Verificá que la Edge Function 'armonia-ia' esté publicada en Supabase."; }
+}
+
+/* --- PONER ACORDES: pegás letra sin acordes -> IA los coloca --- */
+function renderPoner(){
+  crearBody.innerHTML=
+    '<div class="card"><div style="font-size:13px;color:var(--muted);line-height:1.6">Pegá la letra (sin acordes) y la IA te coloca los acordes entre corchetes. Después lo revisás y guardás en el cancionero.</div></div>'+
+    '<label class="fld">Título (opcional)</label><input id="pn-title" placeholder="Nombre de la canción">'+
+    '<div class="row"><div style="flex:2"><label class="fld">Artista (opcional)</label><input id="pn-art" placeholder="Opcional"></div><div style="flex:1"><label class="fld">Tono</label><input id="pn-key" placeholder="C, Am..."></div></div>'+
+    '<label class="fld">Letra sin acordes</label><textarea id="pn-lyrics" rows="9" placeholder="Pegá acá la letra completa..."></textarea>'+
+    '<button class="btn primary block" id="pn-go" style="margin-top:16px">✨ Poner acordes con IA</button>'+
+    '<div id="pn-st" class="hint" style="text-align:center;margin-top:12px;min-height:16px"></div>';
+  document.getElementById("pn-go").onclick=async()=>{
+    const lyr=document.getElementById("pn-lyrics").value.trim(); if(!lyr){document.getElementById("pn-st").textContent="Pegá primero la letra.";return;}
+    const title=document.getElementById("pn-title").value.trim(), art=document.getElementById("pn-art").value.trim(), key=document.getElementById("pn-key").value.trim();
+    const st=document.getElementById("pn-st"); st.innerHTML='<span class="typing"><i></i><i></i><i></i></span> armonizando...';
+    const prompt='Te doy la letra de una canción'+(title?(' titulada "'+title+'"'):'')+(art?(' de '+art):'')+(key?(' en tono '+key):'')+'. Colocá los acordes apropiados entre corchetes sobre las sílabas correctas, por ejemplo "[G]Estrellita [C]dónde es[G]tás". Mantené EXACTAMENTE la letra que te paso, solo agregá los acordes. Respondé SOLO con JSON válido sin markdown: {"title":"","artist":"","key":"","lyrics":""}. Usá \\n para saltos de línea.\n\nLETRA:\n'+lyr;
+    try{
+      const data=await callAI({model:AI_MODEL,max_tokens:2000,messages:[{role:"user",content:prompt}]});
+      let txt=(data.content||[]).map(b=>b.type==="text"?b.text:"").join("").trim().replace(/```json|```/g,"").trim();
+      const obj=JSON.parse(txt);
+      st.textContent="¡Listo! Revisá y guardá.";
+      editSong(null,{id:uid(),title:obj.title||title||"Sin título",artist:obj.artist||art,key:obj.key||key,lyrics:obj.lyrics||lyr,partitura:"",steps:0});
+    }catch(err){ st.textContent="No me pude conectar a la IA. Verificá la Edge Function 'armonia-ia'."; }
+  };
+}
+
+/* ===================== EXPORTAR PDF / WORD ===================== */
+/* Letra plana sin marcas de acorde para lectura, y versión con acordes arriba */
+function lyricsPlainHTML(text){
+  return text.split("\n").map(line=>{
+    if(!line.includes("[")) return '<div class="ln">'+(esc(line)||"&nbsp;")+'</div>';
+    // separa acordes y texto, pone acordes en una fila monoespaciada arriba
+    let chordLine="", textLine="", parts=line.split(/(\[[^\]]+\])/);
+    parts.forEach(p=>{ const m=p.match(/^\[([^\]]+)\]$/); if(m){ chordLine+=m[1]; } else { while(chordLine.length<textLine.length)chordLine+=" "; textLine+=p; } });
+    return '<div class="chrow">'+esc(chordLine.replace(/ /g,"\u00A0"))+'</div><div class="ln">'+(esc(textLine)||"&nbsp;")+'</div>';
+  }).join("");
+}
+function songExportHTML(s){
+  return '<div style="font-family:Georgia,serif;color:#111;max-width:680px;margin:0 auto;padding:24px">'+
+    '<h1 style="font-size:26px;margin:0 0 4px">'+esc(s.title||"Sin título")+'</h1>'+
+    '<div style="color:#555;font-size:14px;margin-bottom:6px">'+esc(s.artist||"")+(s.key?(' · Tono '+esc(s.key)):'')+'</div>'+
+    '<hr style="border:none;border-top:1px solid #ccc;margin:10px 0 18px">'+
+    '<style>.chrow{font-family:Consolas,monospace;color:#1a8a7d;font-weight:bold;font-size:14px;white-space:pre;line-height:1.2}.ln{font-size:16px;line-height:1.5;margin-bottom:6px;white-space:pre-wrap}</style>'+
+    '<div>'+lyricsPlainHTML(s.lyrics||"")+'</div>'+
+    (s.partitura?'<div style="margin-top:20px"><img src="'+s.partitura+'" style="max-width:100%"></div>':'')+
+    '<div style="margin-top:28px;color:#999;font-size:11px">Armonía · uso exclusivo de Rosi Linco</div></div>';
+}
+function downloadWord(s){
+  const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"></head><body>'+songExportHTML(s)+'</body></html>';
+  const blob=new Blob(["\ufeff"+html],{type:"application/msword"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=(s.title||"cancion").replace(/[^\w\sáéíóúñ-]/gi,"")+".doc";a.click();
+}
+function downloadPDF(s){
+  const w=window.open("","_blank");
+  if(!w){alert("Permití las ventanas emergentes para generar el PDF.");return;}
+  w.document.write('<html><head><title>'+esc(s.title||"canción")+'</title></head><body>'+songExportHTML(s)+'<script>window.onload=function(){setTimeout(function(){window.print();},300);}<\/script></body></html>');
+  w.document.close();
+}
+
+/* ===================== Init ===================== */
+renderLib();
+setTimeout(()=>{const sp=document.getElementById("splash");sp.style.opacity="0";setTimeout(()=>sp.remove(),600);},1300);
+if("serviceWorker" in navigator){try{const sw="self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>self.clients.claim());self.addEventListener('fetch',e=>{});";navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:"application/javascript"}))).catch(()=>{});}catch(e){}}
+</script>
+</body>
+</html>
